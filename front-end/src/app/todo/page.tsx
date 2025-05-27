@@ -83,10 +83,8 @@ export default function Home() {
   return (
     <div className={styles.page}>
       <main className={styles.main}>
-        {/* Main page container */}
         <div className={styles.todoContainer}>
           <h1>To-do List</h1>
-          {/* Text field and add button container */}
           <div className={styles.addBar}>
             <input
               className={styles.input}

@@ -1,3 +1,4 @@
+/*Fonte Inter*/
 .page {
   display: grid;
   grid-template-rows: 20px 1fr 20px;
@@ -6,7 +7,6 @@
   min-height: 100svh;
   padding: 80px;
   gap: 64px;
-  font-family: var(--font-geist-sans);
 }
 
 .main {
@@ -19,14 +19,14 @@
 .todoContainer {
   background: #ffffff;
   display: flex;
-  width: 20vw;
-  padding: 30px;
+  width: 100%;
+  height: 100%;
+  padding: 2rem;
   flex-direction: column;
   align-items: flex-start;
-  gap: 23px;
+  gap: 1.2rem;
   flex-shrink: 0;
-  border-radius: 20px;
-  background: #FEFEFE;
+  border-radius: 1.2rem;
   box-shadow: 0px 4px 16px 0px rgba(0, 0, 0, 0.25);
 }
 
@@ -43,8 +43,9 @@
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 10px;
+  gap: 1rem;
   align-self: stretch;
+
 }
 
 .todoItem {
@@ -56,17 +57,12 @@
 
 .todoTittle{
   display: flex;
-  align-items: center;
+  align-items: left;
   flex-direction: row;
-  width: 244px;
-  height: 30px;
+  width: 250px;
+  height: 100%;
+  gap: 0.5rem;
   list-style: none;
-}
-
-.editContainer {
-  display: flex;
-  align-items: center;
-  gap: 2px; /* Espaço entre input e ícones */
 }
 
 .input{
