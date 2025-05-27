@@ -12,8 +12,13 @@ from app.database import get_db
 from app.interfaces.schemas.user import UserCreate
 from app.interfaces.schemas.todo import TodoCreate, TodoOut
 from app.interfaces.schemas.user import UserLogin
+from pydantic import BaseModel
 
 router = APIRouter()
+
+class TodoUpdate(BaseModel):
+    done: bool | None = None
+    title: str | None = None
 
 @router.post("/register")
 def register(user: UserCreate, db: Session = Depends(get_db)):
@@ -64,3 +69,17 @@ def delete_todo(todo_id: int, db: Session = Depends(get_db), user=Depends(get_cu
     if not success:
         raise HTTPException(status_code=404, detail="Item não encontrado")
     return {"ok": True}
+
+@router.patch("/todos/{todo_id}", response_model=TodoOut)
+def update_todo(todo_id: int, todo: TodoUpdate, db: Session = Depends(get_db), user=Depends(get_current_user)):
+    todo_repo = TodoRepositoryImpl(db)
+    todo_model = db.query(TodoModel).filter(TodoModel.id == todo_id, TodoModel.user_id == user.id).first()
+    if not todo_model:
+        raise HTTPException(status_code=404, detail="Item não encontrado")
+    if todo.done is not None:
+        todo_model.done = todo.done
+    if todo.title is not None:
+        todo_model.title = todo.title
+    db.commit()
+    db.refresh(todo_model)
+    return todo_model

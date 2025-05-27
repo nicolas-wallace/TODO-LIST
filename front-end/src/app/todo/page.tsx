@@ -4,6 +4,7 @@ import Image from "next/image";
 import styles from "../styles/page.module.css"; // Adjust the path as necessary
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import * as React from "react";
 
 export default function Home() {
   const router = useRouter();
@@ -15,7 +16,7 @@ export default function Home() {
   const [search, setSearch] = useState<string>("");
 
   // Buscar todos do back-end
-  const fetchTodos = async () => {
+  const fetchTodos = async (): Promise<void> => {
     setLoading(true);
     const token = localStorage.getItem("token");
     if (!token) return;
@@ -35,7 +36,7 @@ export default function Home() {
   }, []);
 
   // Adicionar tarefa
-  const addTodo = async () => {
+  const addTodo = async (): Promise<void> => {
     if (!todo.trim()) return;
     const token = localStorage.getItem("token");
     if (!token) return;
@@ -54,7 +55,7 @@ export default function Home() {
   };
 
   // Deletar tarefa
-  const deleteTodo = async (id: number) => {
+  const deleteTodo = async (id: number): Promise<void> => {
     const token = localStorage.getItem("token");
     if (!token) return;
     const res = await fetch(`http://localhost:8000/todos/${id}`, {
@@ -67,30 +68,46 @@ export default function Home() {
   };
 
   // Iniciar edição
-  const startEdit = (index: number, currentText: string) => {
-    setEditIndex(index);
+  const startEdit = (id: number, currentText: string): void => {
+    setEditIndex(id);
     setEditText(currentText);
   };
 
   // Salvar edição (não implementado no back-end, apenas local)
-  const saveEdit = (index: number) => {
-    // Aqui você pode implementar uma chamada PATCH/PUT futuramente
-    const updatedTodos = todos.map((item, i) =>
-      i === index ? { ...item, title: editText } : item
+  const saveEdit = (id: number): void => {
+    const updatedTodos = todos.map((item: { id: number; title: string; done: boolean }) =>
+      item.id === id ? { ...item, title: editText } : item
     );
     setTodos(updatedTodos);
     setEditIndex(null);
     setEditText("");
   };
 
+  // Atualiza toggleComplete para persistir no backend
+  const toggleComplete = async (id: number): Promise<void> => {
+    const token = localStorage.getItem("token");
+    if (!token) return;
+    const todo = todos.find((item: { id: number; title: string; done: boolean }) => item.id === id);
+    if (!todo) return;
+    await fetch(`http://localhost:8000/todos/${id}`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ done: !todo.done }),
+    });
+    fetchTodos();
+  };
+
   // Função de logout
-  const handleLogout = () => {
+  const handleLogout = (): void => {
     localStorage.removeItem("token");
     router.push("/");
   };
 
   // Filtrar todos conforme busca
-  const filteredTodos = todos.filter(t => t.title.toLowerCase().includes(search.toLowerCase()));
+  const filteredTodos = todos.filter((t: { id: number; title: string; done: boolean }) => t.title.toLowerCase().includes(search.toLowerCase()));
 
   return (
     <div className={styles.page}>
@@ -119,7 +136,7 @@ export default function Home() {
             type="text"
             placeholder="Buscar tarefas..."
             value={search}
-            onChange={e => setSearch(e.target.value)}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearch(e.target.value)}
             style={{ marginBottom: 16, width: '100%', padding: 8, borderRadius: 8, border: '1px solid #C5C5C5' }}
           />
           <div className={styles.addBar}>
@@ -128,7 +145,7 @@ export default function Home() {
               type="text"
               value={todo}
               placeholder="Adicione uma tarefa"
-              onChange={(e) => setTodo(e.target.value)}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setTodo(e.target.value)}
             />
             <button className={styles.addButton} onClick={addTodo}>
               Adicionar
@@ -138,23 +155,40 @@ export default function Home() {
             <p>Carregando...</p>
           ) : (
             <ul className={styles.todoListing}>
-              {filteredTodos.map((value, index) => (
+              {filteredTodos.map((value: { id: number; title: string; done: boolean }) => (
                 <div className={styles.todoItem} key={value.id}>
                   <div className={styles.todoTittle}>
-                    <button>Completar</button>
-                    <li>
-                      {editIndex === index ? (
+                    <i
+                      style={{ cursor: 'pointer', marginRight: 8 }}
+                      onClick={() => toggleComplete(value.id)}
+                      title={value.done ? 'Desmarcar como completo' : 'Marcar como completo'}
+                    >
+                      <Image
+                        src={value.done ? '/filledRadio.svg' : '/emptyRadio.svg'}
+                        alt={value.done ? 'Todo completo' : 'Todo não completo'}
+                        width={20}
+                        height={20}
+                      />
+                    </i>
+                    <li
+                      style={
+                        value.done
+                          ? { textDecoration: 'line-through', color: '#888' }
+                          : {}
+                      }
+                    >
+                      {editIndex === value.id && !value.done ? (
                         <span className={styles.editContainer}>
                           <input
                             value={editText}
-                            onChange={(e) => setEditText(e.target.value)}
+                            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEditText(e.target.value)}
                             style={{ marginRight: "8px" }}
                           />
                           <i
                             className={styles.saveIcon}
                             title="Salvar"
                             style={{ cursor: "pointer", marginRight: "8px" }}
-                            onClick={() => saveEdit(index)}
+                            onClick={() => saveEdit(value.id)}
                           >
                             <Image
                               src="./check-lg.svg"
@@ -183,19 +217,21 @@ export default function Home() {
                     </li>
                   </div>
                   <div className={styles.todoActionButtons}>
-                    <i
-                      className={styles.renameIcon}
-                      title="Renomear"
-                      style={{ cursor: "pointer", marginRight: "8px" }}
-                      onClick={() => startEdit(index, value.title)}
-                    >
-                      <Image
-                        src="./Edit icon.svg"
-                        alt="Rename icon"
-                        width={16}
-                        height={16}
-                      />
-                    </i>
+                    {!value.done && (
+                      <i
+                        className={styles.renameIcon}
+                        title="Renomear"
+                        style={{ cursor: "pointer", marginRight: "8px" }}
+                        onClick={() => startEdit(value.id, value.title)}
+                      >
+                        <Image
+                          src="./Edit icon.svg"
+                          alt="Rename icon"
+                          width={16}
+                          height={16}
+                        />
+                      </i>
+                    )}
                     <i
                       className={styles.deleteIcon}
                       title="Deletar"

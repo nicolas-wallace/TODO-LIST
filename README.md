@@ -3,10 +3,12 @@
 Este projeto é uma aplicação completa de lista de tarefas (To-do List) com autenticação, desenvolvida com FastAPI (back-end) e Next.js (front-end).
 
 ## Funcionalidades
-- Cadastro e login de usuários
-- Autenticação JWT
-- Criação, listagem, busca e remoção de tarefas
-- Interface moderna e responsiva
+- Cadastro e login de usuários com autenticação JWT
+- Criação, listagem, busca, edição, conclusão e remoção de tarefas
+- Marcação de tarefas como concluídas (com persistência no banco de dados)
+- Interface moderna, responsiva e intuitiva
+- Busca de tarefas em tempo real
+- Logout seguro
 - Integração total entre front-end e back-end
 - Pronto para rodar com Docker ou manualmente
 
@@ -15,10 +17,18 @@ Este projeto é uma aplicação completa de lista de tarefas (To-do List) com au
 TODO-LIST/
 ├── back-end/         # Código do FastAPI
 │   ├── app/          # Aplicação principal
+│   │   ├── domain/   # Entidades e repositórios de domínio
+│   │   ├── application/ # Casos de uso
+│   │   ├── infrastructure/ # Implementações e serviços
+│   │   ├── interfaces/ # APIs e schemas
+│   │   └── ...
 │   ├── requirements.txt
 │   └── Dockerfile
 ├── front-end/        # Código do Next.js
 │   ├── src/
+│   │   ├── app/      # Páginas e componentes
+│   │   └── styles/   # Estilos globais e de página
+│   ├── public/       # Imagens e ícones
 │   ├── package.json
 │   └── Dockerfile
 ├── docker-compose.yml
@@ -61,9 +71,14 @@ Ou rode o arquivo run.bat na pasta raiz do projeto.
 ## Configurações importantes
 - O front-end faz requisições para o back-end em `http://localhost:8000` por padrão.
 - O banco de dados SQLite é criado automaticamente na primeira execução.
+- As tarefas concluídas são salvas no banco de dados e mantidas após logout/login.
+- Os ícones utilizados estão na pasta `front-end/public`.
+- O sistema de autenticação utiliza JWT para proteger as rotas e operações.
 
 ## Observações
 - Para produção, ajuste variáveis de ambiente e configurações de CORS conforme necessário.
 - O projeto pode ser facilmente adaptado para outros bancos de dados.
+- O código está organizado para facilitar a manutenção e expansão.
+- Dúvidas ou sugestões? Fique à vontade para abrir uma issue!
 
 ---
