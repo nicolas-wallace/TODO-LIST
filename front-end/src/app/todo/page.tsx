@@ -19,7 +19,7 @@ export default function Home() {
     setLoading(true);
     const token = localStorage.getItem("token");
     if (!token) return;
-    const res = await fetch("http://localhost:8000/todos", {
+    const res = await fetch("https://todo-list-q7o0.onrender.com/todos", {
       headers: { Authorization: `Bearer ${token}` },
     });
     if (res.ok) {
@@ -39,7 +39,7 @@ export default function Home() {
     if (!todo.trim()) return;
     const token = localStorage.getItem("token");
     if (!token) return;
-    const res = await fetch("http://localhost:8000/todos", {
+    const res = await fetch("https://todo-list-q7o0.onrender.com/todos", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -57,7 +57,7 @@ export default function Home() {
   const deleteTodo = async (id: number) => {
     const token = localStorage.getItem("token");
     if (!token) return;
-    const res = await fetch(`http://localhost:8000/todos/${id}`, {
+    const res = await fetch(`https://todo-list-q7o0.onrender.com/todos/${id}`, {
       method: "DELETE",
       headers: { Authorization: `Bearer ${token}` },
     });
