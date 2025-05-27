@@ -73,14 +73,23 @@ export default function Home() {
     setEditText(currentText);
   };
 
-  // Salvar edição (não implementado no back-end, apenas local)
-  const saveEdit = (id: number): void => {
-    const updatedTodos = todos.map((item: { id: number; title: string; done: boolean }) =>
-      item.id === id ? { ...item, title: editText } : item
-    );
-    setTodos(updatedTodos);
-    setEditIndex(null);
-    setEditText("");
+  // Salvar edição (agora persiste no back-end)
+  const saveEdit = async (id: number): Promise<void> => {
+    const token = localStorage.getItem("token");
+    if (!token) return;
+    const res = await fetch(`http://localhost:8000/todos/${id}`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ title: editText }),
+    });
+    if (res.ok) {
+      fetchTodos();
+      setEditIndex(null);
+      setEditText("");
+    }
   };
 
   // Atualiza toggleComplete para persistir no backend
