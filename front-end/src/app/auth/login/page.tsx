@@ -70,6 +70,9 @@ export default function LoginPage() {
           <p>
             Não tem conta? <a href="/auth/register">Cadastre-se</a>
           </p>
+          <p>
+            Não tem conta? <a href="/todo">Cadastre-se</a>
+          </p>
         </div>
       </div>
     </div>
