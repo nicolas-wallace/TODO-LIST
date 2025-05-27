@@ -12,6 +12,7 @@ export default function Home() {
   const [editIndex, setEditIndex] = useState<number | null>(null);
   const [editText, setEditText] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(true);
+  const [search, setSearch] = useState<string>("");
 
   // Buscar todos do back-end
   const fetchTodos = async () => {
@@ -88,6 +89,9 @@ export default function Home() {
     router.push("/");
   };
 
+  // Filtrar todos conforme busca
+  const filteredTodos = todos.filter(t => t.title.toLowerCase().includes(search.toLowerCase()));
+
   return (
     <div className={styles.page}>
       <button
@@ -111,6 +115,13 @@ export default function Home() {
       <main className={styles.main}>
         <div className={styles.todoContainer}>
           <h1>To-do List</h1>
+          <input
+            type="text"
+            placeholder="Buscar tarefas..."
+            value={search}
+            onChange={e => setSearch(e.target.value)}
+            style={{ marginBottom: 16, width: '100%', padding: 8, borderRadius: 8, border: '1px solid #C5C5C5' }}
+          />
           <div className={styles.addBar}>
             <input
               className={styles.input}
@@ -127,7 +138,7 @@ export default function Home() {
             <p>Carregando...</p>
           ) : (
             <ul className={styles.todoListing}>
-              {todos.map((value, index) => (
+              {filteredTodos.map((value, index) => (
                 <div className={styles.todoItem} key={value.id}>
                   <div className={styles.todoTittle}>
                     <button>Completar</button>
