@@ -3,8 +3,10 @@
 import Image from "next/image";
 import styles from "../styles/page.module.css"; // Adjust the path as necessary
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 
 export default function Home() {
+  const router = useRouter();
   const [todos, setTodos] = useState<{ id: number; title: string; done: boolean }[]>([]);
   const [todo, setTodo] = useState<string>("");
   const [editIndex, setEditIndex] = useState<number | null>(null);
@@ -80,8 +82,32 @@ export default function Home() {
     setEditText("");
   };
 
+  // Função de logout
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    router.push("/");
+  };
+
   return (
     <div className={styles.page}>
+      <button
+        onClick={handleLogout}
+        style={{
+          position: 'fixed',
+          top: 32,
+          right: 32,
+          background: '#0098A9',
+          color: 'white',
+          border: 'none',
+          borderRadius: 8,
+          padding: '8px 16px',
+          fontWeight: 'bold',
+          cursor: 'pointer',
+          zIndex: 1000,
+        }}
+      >
+        Sair
+      </button>
       <main className={styles.main}>
         <div className={styles.todoContainer}>
           <h1>To-do List</h1>
