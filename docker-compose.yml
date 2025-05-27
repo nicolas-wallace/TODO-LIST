@@ -1,0 +1,19 @@
+version: "3.8"
+services:
+  backend:
+    build: ./back-end
+    volumes:
+      - ./back-end/app.db:/app/app.db
+    ports:
+      - "8000:8000"
+    environment:
+      - TZ=America/Sao_Paulo
+
+  frontend:
+    build: ./front-end
+    ports:
+      - "3000:3000"
+    environment:
+      - TZ=America/Sao_Paulo
+    depends_on:
+      - backend
