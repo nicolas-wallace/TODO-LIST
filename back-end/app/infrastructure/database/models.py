@@ -6,6 +6,7 @@ class User(Base):
     id = Column(Integer, primary_key=True, index=True)
     username = Column(String, unique=True, index=True)
     password = Column(String)
+    email = Column(String, unique=True, index=True)
 
 class Todo(Base):
     __tablename__ = "todos"

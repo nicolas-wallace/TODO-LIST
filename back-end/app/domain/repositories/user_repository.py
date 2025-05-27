@@ -8,5 +8,9 @@ class UserRepository(ABC):
         pass
 
     @abstractmethod
-    def create(self, username: str, password: str) -> User:
+    def get_by_email(self, email: str) -> Optional[User]:
+        pass
+
+    @abstractmethod
+    def create(self, username: str, password: str, email: str) -> User:
         pass

@@ -1,26 +1,26 @@
 "use client";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { serialize } from "v8";
 import "../../styles/auth.pages.css";
 
 export default function RegisterPage() {
-
   const router = useRouter();
   const [email, setEmail] = useState("");
-  const [senha, setSenha] = useState("");
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
   const [confirmarSenha, setConfirmarSenha] = useState("");
-  
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
-
-    const res = await fetch("http://localhost:8000/auth/register", {
+    if (password !== confirmarSenha) {
+      alert("As senhas não coincidem.");
+      return;
+    }
+    const res = await fetch("http://localhost:8000/register", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, senha }),
+      body: JSON.stringify({ username, password, email }),
     });
-
     if (res.ok) {
       alert("Cadastro realizado!");
       router.push("/auth/login");
@@ -37,14 +37,23 @@ export default function RegisterPage() {
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          
         }}
       >
-        <div style={{display:"flex",flexDirection:"column",gap:"2rem", maxWidth: 800, padding: 32, fontSize: "1.5rem" }}>	
-          <h1 style={{fontSize:"4rem",textAlign:"center"}}>TODO-list</h1>
-          <h2 style={{textAlign:"center"}}>Rápido, Eficiente e Produtivo</h2>
-          <p style={{textAlign:"center"}}>
-            Organize suas tarefas, aumente seu foco e alcance mais resultados todos os dias
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            gap: "2rem",
+            maxWidth: 800,
+            padding: 32,
+            fontSize: "1.5rem",
+          }}
+        >
+          <h1 style={{ fontSize: "4rem", textAlign: "center" }}>TODO-list</h1>
+          <h2 style={{ textAlign: "center" }}>Rápido, Eficiente e Produtivo</h2>
+          <p style={{ textAlign: "center" }}>
+            Organize suas tarefas, aumente seu foco e alcance mais resultados
+            todos os dias
           </p>
         </div>
       </div>
@@ -59,6 +68,15 @@ export default function RegisterPage() {
         <div className="container-auth">
           <h1>Cadastre-se</h1>
           <form onSubmit={handleRegister} className="container-form">
+            <label htmlFor="username">Usuário</label>
+            <input
+              id="username"
+              type="text"
+              placeholder="Digite seu usuário"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              required
+            />
             <label htmlFor="email">Email</label>
             <input
               id="email"
@@ -68,17 +86,15 @@ export default function RegisterPage() {
               onChange={(e) => setEmail(e.target.value)}
               required
             />
-
             <label htmlFor="senha">Senha</label>
             <input
               id="senha"
               type="password"
               placeholder="Senha"
-              value={senha}
-              onChange={(e) => setSenha(e.target.value)}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
               required
             />
-
             <label htmlFor="confirmarSenha">Confirmar Senha</label>
             <input
               id="confirmarSenha"
@@ -88,7 +104,6 @@ export default function RegisterPage() {
               onChange={(e) => setConfirmarSenha(e.target.value)}
               required
             />
-            
             <button type="submit">Cadastrar-se</button>
           </form>
           <p>

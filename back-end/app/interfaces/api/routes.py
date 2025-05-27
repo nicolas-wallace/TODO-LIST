@@ -11,6 +11,7 @@ from app.infrastructure.auth.auth_service import create_token, decode_token, oau
 from app.database import get_db
 from app.interfaces.schemas.user import UserCreate
 from app.interfaces.schemas.todo import TodoCreate, TodoOut
+from app.interfaces.schemas.user import UserLogin
 
 router = APIRouter()
 
@@ -18,20 +19,23 @@ router = APIRouter()
 def register(user: UserCreate, db: Session = Depends(get_db)):
     user_repo = UserRepositoryImpl(db)
     user_use_case = UserUseCase(user_repo)
-    db_user = user_use_case.get_user_by_username(user.username)
+    db_user = user_use_case.get_user_by_email(user.email)
     if db_user:
+        raise HTTPException(status_code=400, detail="Email já cadastrado")
+    db_user_username = user_use_case.get_user_by_username(user.username)
+    if db_user_username:
         raise HTTPException(status_code=400, detail="Usuário já existe")
-    return user_use_case.register_user(user.username, user.password)
+    return user_use_case.register_user(user.username, user.password, user.email)
 
 @router.post("/login")
-def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
+def login(user: UserLogin, db: Session = Depends(get_db)):
     user_repo = UserRepositoryImpl(db)
     user_use_case = UserUseCase(user_repo)
-    user = user_use_case.get_user_by_username(form_data.username)
-    if not user or not user.check_password(form_data.password):
+    db_user = user_use_case.get_user_by_email(user.email)
+    if not db_user or not db_user.check_password(user.password):
         raise HTTPException(status_code=400, detail="Credenciais inválidas")
-    token = create_token({"sub": str(user.id)})
-    return {"access_token": token, "token_type": "bearer"}
+    token = create_token({"sub": str(db_user.id)})
+    return {"token": token, "token_type": "bearer"}
 
 def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
     user_id = decode_token(token)

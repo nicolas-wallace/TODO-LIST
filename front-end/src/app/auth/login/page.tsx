@@ -7,17 +7,15 @@ import "../../styles/auth.pages.css";
 export default function LoginPage() {
   const router = useRouter();
   const [email, setEmail] = useState("");
-  const [senha, setSenha] = useState("");
+  const [password, setSenha] = useState("");
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-
-    const res = await fetch("http://localhost:8000/auth/login", {
+    const res = await fetch("http://localhost:8000/login", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, senha }),
+      body: JSON.stringify({ email, password }),
     });
-
     if (res.ok) {
       const data = await res.json();
       localStorage.setItem("token", data.token);
@@ -63,7 +61,7 @@ export default function LoginPage() {
               id="senha"
               type="password"
               placeholder="Senha"
-              value={senha}
+              value={password}
               onChange={(e) => setSenha(e.target.value)}
               required
             />
