@@ -27,7 +27,6 @@ export default function LoginPage() {
 
   return (
     <div className="auth-page">
-      <div>
         <div className="auth-info">
           <h1>TODO-list</h1>
           <h2>Rápido, Eficiente e Produtivo</h2>
@@ -35,15 +34,7 @@ export default function LoginPage() {
             Organize suas tarefas, aumente seu foco e alcance mais resultados todos os dias
           </p>
         </div>
-      </div>
-      <div
-        style={{
-          flex: 1,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-      >
+      <div className="container-space-auth">
         <div className="container-auth">
           <h1>Login</h1>
           <form onSubmit={handleLogin} className="container-form">

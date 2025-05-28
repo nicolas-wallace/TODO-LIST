@@ -30,41 +30,16 @@ export default function RegisterPage() {
   };
 
   return (
-    <div style={{ display: "flex", minHeight: "100vh" }}>
-      <div
-        style={{
-          flex: 1,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-      >
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            gap: "2rem",
-            maxWidth: 800,
-            padding: 32,
-            fontSize: "1.5rem",
-          }}
-        >
-          <h1 style={{ fontSize: "4rem", textAlign: "center" }}>TODO-list</h1>
-          <h2 style={{ textAlign: "center" }}>Rápido, Eficiente e Produtivo</h2>
-          <p style={{ textAlign: "center" }}>
+    <div className="auth-page">
+      <div className="auth-info">
+          <h1>TODO-list</h1>
+          <h2>Rápido, Eficiente e Produtivo</h2>
+          <p>
             Organize suas tarefas, aumente seu foco e alcance mais resultados
             todos os dias
           </p>
-        </div>
       </div>
-      <div
-        style={{
-          flex: 1,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-      >
+      <div className="container-space-auth">
         <div className="container-auth">
           <h1>Cadastre-se</h1>
           <form onSubmit={handleRegister} className="container-form">
@@ -77,7 +52,7 @@ export default function RegisterPage() {
               onChange={(e) => setUsername(e.target.value)}
               required
             />
-            <label htmlFor="email">Email</label>
+            <label htmlFor="email">E-mail</label>
             <input
               id="email"
               type="email"
