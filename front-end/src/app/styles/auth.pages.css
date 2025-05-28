@@ -33,7 +33,7 @@
   flex-direction: column;
   gap: 1.5rem;
   background: #fefefe;
-  border-radius: 8px;
+  border-radius: 16px;
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
 }
 
